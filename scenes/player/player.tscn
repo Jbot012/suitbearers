@@ -3892,25 +3892,23 @@ _data = {
 &"walk": SubResource("Animation_3abpj")
 }
 
-[node name="Node3D" type="Node3D"]
-
-[node name="player" type="CharacterBody3D" parent="."]
+[node name="player" type="CharacterBody3D"]
 script = ExtResource("1_8afob")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="player"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 shape = SubResource("CylinderShape3D_dovo2")
 
-[node name="visuals" type="Node3D" parent="player"]
+[node name="visuals" type="Node3D" parent="."]
 transform = Transform3D(1, 0, -1.74846e-07, 0, 1, 0, 1.74846e-07, 0, 1, 0, 0, 0)
 
-[node name="player" type="Node3D" parent="player/visuals"]
+[node name="player" type="Node3D" parent="visuals"]
 transform = Transform3D(-1, 0, -8.9407e-08, 0, 1, 0, 8.9407e-08, 0, -1, 0, 0, 0)
 
-[node name="Armature" type="Node3D" parent="player/visuals/player"]
+[node name="Armature" type="Node3D" parent="visuals/player"]
 transform = Transform3D(0.01, 0, 0, 0, -3.57628e-09, -0.01, 0, 0.01, -3.57628e-09, 0, 0, 0)
 
-[node name="Skeleton3D" type="Skeleton3D" parent="player/visuals/player/Armature"]
+[node name="Skeleton3D" type="Skeleton3D" parent="visuals/player/Armature"]
 bones/0/name = "mixamorig_Hips"
 bones/0/parent = -1
 bones/0/rest = Transform3D(1, -5.00981e-07, 6.47144e-09, 0, 0.0129164, 0.999917, -5.01023e-07, -0.999917, 0.0129164, -7.72729e-06, 1.55432, -104.275)
@@ -4367,15 +4365,18 @@ bones/64/position = Vector3(4.04477e-07, 9.27814, 1.08953e-06)
 bones/64/rotation = Quaternion(1.21626e-08, -0.0118692, -1.4436e-10, 0.99993)
 bones/64/scale = Vector3(1, 1, 1)
 
-[node name="Beta_Joints" type="MeshInstance3D" parent="player/visuals/player/Armature/Skeleton3D"]
+[node name="Beta_Joints" type="MeshInstance3D" parent="visuals/player/Armature/Skeleton3D"]
 mesh = SubResource("ArrayMesh_jv07n")
 skin = SubResource("Skin_8vlqm")
 
-[node name="Beta_Surface" type="MeshInstance3D" parent="player/visuals/player/Armature/Skeleton3D"]
+[node name="Beta_Surface" type="MeshInstance3D" parent="visuals/player/Armature/Skeleton3D"]
 mesh = SubResource("ArrayMesh_3pd2i")
 skin = SubResource("Skin_8vlqm")
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="player/visuals/player"]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="visuals/player"]
 libraries = {
 &"": SubResource("AnimationLibrary_46wte")
 }
+
+[node name="camera_point" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.79165, 0.610975, 0, -0.610975, 0.79165, 0, 4.01054, 2.95301)
