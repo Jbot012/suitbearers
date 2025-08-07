@@ -3,6 +3,7 @@ extends CharacterBody3D
 
 const SPEED = 3.0
 const JUMP_VELOCITY = 4.5
+const SMOOTH_SPEED = 10.0
 
 @onready var animation_player: AnimationPlayer = $visuals/player/AnimationPlayer
 @onready var visuals: Node3D = $visuals
@@ -10,13 +11,17 @@ const JUMP_VELOCITY = 4.5
 
 var walking = false
 
+func _enter_tree() -> void:
+	set_multiplayer_authority(str(name).to_int())
+
 func _ready():
+	if not is_multiplayer_authority(): return
+	
 	GameManager.set_player(self)
-	animation_player.set_blend_time("idle", "walk", 0.2)
-	animation_player.set_blend_time("walk", "idle", 0.2)
-
-
+	
 func _physics_process(delta: float) -> void:
+	if not is_multiplayer_authority(): return
+	
 	# Add the gravity.
 	if not is_on_floor():
 		velocity += get_gravity() * delta
@@ -29,11 +34,12 @@ func _physics_process(delta: float) -> void:
 	# As good practice, you should replace UI actions with custom gameplay actions.
 	var input_dir := Input.get_vector("left", "right", "forward", "backward")
 	var direction := (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
+	var visual_dir = Vector3(input_dir.x, 0, input_dir.y).normalized()
 	if direction:
 		velocity.x = direction.x * SPEED
 		velocity.z = direction.z * SPEED
 		 
-		visuals.look_at(direction + position)
+		visuals.rotation.y = lerp_angle(visuals.rotation.y, atan2(-visual_dir.x, -visual_dir.z), delta * SMOOTH_SPEED)
 		
 		if !walking:
 			walking = true
@@ -45,5 +51,5 @@ func _physics_process(delta: float) -> void:
 		if walking:
 			walking = false
 			animation_player.play("idle")
-
+	
 	move_and_slide()

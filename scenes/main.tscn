@@ -1,9 +1,9 @@
-[gd_scene load_steps=8 format=3 uid="uid://cinxihvifxqxn"]
+[gd_scene load_steps=9 format=3 uid="uid://cinxihvifxqxn"]
 
 [ext_resource type="Material" uid="uid://dryljljbd1h1d" path="res://materials/floor_material.tres" id="1_0wfyh"]
+[ext_resource type="Script" uid="uid://gllxhy3bv64k" path="res://scripts/main.gd" id="1_jyhfs"]
 [ext_resource type="Material" uid="uid://ce67571nbs0j" path="res://materials/wall_material.tres" id="2_sugp2"]
-[ext_resource type="PackedScene" uid="uid://bor5virs8xy3m" path="res://scenes/player/player.tscn" id="3_sugp2"]
-[ext_resource type="PackedScene" uid="uid://be6i617bwsa8q" path="res://scenes/player/camera_rig.tscn" id="4_jyhfs"]
+[ext_resource type="Shader" uid="uid://dmnnnus6d7vhh" path="res://assets/shader/blur.gdshader" id="4_jyhfs"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_jyhfs"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -18,7 +18,12 @@ sky = SubResource("Sky_tbgi4")
 tonemap_mode = 2
 glow_enabled = true
 
-[node name="world" type="Node3D"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_tbgi4"]
+shader = ExtResource("4_jyhfs")
+shader_parameter/amount = 3.341
+
+[node name="world" type="Node"]
+script = ExtResource("1_jyhfs")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_tefeu")
@@ -61,7 +66,90 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.54733, 0)
 layers = 3
 omni_range = 15.6645
 
-[node name="player" parent="." instance=ExtResource("3_sugp2")]
-transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 0, 0.5, 0)
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("uid://bor5virs8xy3m")
+spawn_path = NodePath("..")
 
-[node name="camera_rig" parent="." instance=ExtResource("4_jyhfs")]
+[node name="main_menu" type="CanvasLayer" parent="."]
+
+[node name="MainMenu" type="PanelContainer" parent="main_menu"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 503.0
+offset_top = 255.0
+offset_right = -503.0
+offset_bottom = -255.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="main_menu/MainMenu"]
+layout_mode = 2
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 15
+
+[node name="VBoxContainer" type="VBoxContainer" parent="main_menu/MainMenu/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="Label" type="Label" parent="main_menu/MainMenu/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Main Menu"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HostButton" type="Button" parent="main_menu/MainMenu/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Host"
+
+[node name="JoinButton" type="Button" parent="main_menu/MainMenu/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Join"
+
+[node name="AddressEntry" type="LineEdit" parent="main_menu/MainMenu/MarginContainer/VBoxContainer"]
+layout_mode = 2
+placeholder_text = "Enter Address to Join Here"
+alignment = 1
+
+[node name="pause_menu" type="CanvasLayer" parent="."]
+
+[node name="Pause Menu" type="PanelContainer" parent="pause_menu"]
+material = SubResource("ShaderMaterial_tbgi4")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="pause_menu/Pause Menu"]
+layout_mode = 2
+theme_override_constants/margin_left = 500
+theme_override_constants/margin_top = 500
+theme_override_constants/margin_right = 500
+theme_override_constants/margin_bottom = 15
+
+[node name="VBoxContainer" type="VBoxContainer" parent="pause_menu/Pause Menu/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="ConnectionAddress" type="Label" parent="pause_menu/Pause Menu/MarginContainer/VBoxContainer"]
+layout_mode = 2
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Return" type="Button" parent="pause_menu/Pause Menu/MarginContainer/VBoxContainer"]
+process_mode = 3
+layout_mode = 2
+text = "Return"
+
+[node name="Quit" type="Button" parent="pause_menu/Pause Menu/MarginContainer/VBoxContainer"]
+process_mode = 3
+layout_mode = 2
+text = "Quit"
+
+[connection signal="pressed" from="main_menu/MainMenu/MarginContainer/VBoxContainer/HostButton" to="." method="_on_host_button_pressed"]
+[connection signal="pressed" from="main_menu/MainMenu/MarginContainer/VBoxContainer/JoinButton" to="." method="_on_join_button_pressed"]
+[connection signal="pressed" from="pause_menu/Pause Menu/MarginContainer/VBoxContainer/Return" to="." method="_on_return_pressed"]
+[connection signal="pressed" from="pause_menu/Pause Menu/MarginContainer/VBoxContainer/Quit" to="." method="_on_quit_pressed"]
